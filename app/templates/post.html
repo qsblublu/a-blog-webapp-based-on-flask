@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Gitblog-Post{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    {% if not current_user.is_following_post(post) %}
+        <a href="{{url_for('main.follow_post', id=post.id)}}" class="btn btn-primary">Follow</a>
+    {% else %}
+        <a href="{{url_for('main.unfollow_post', id=post.id)}}" class="btn btn-default">Unfollow</a>
+    {% endif %}
+    Followers: <span class="badge">{{post.followers.count()}}</span>
+</div>
+<div class="post-body">
+    {% if post.body_html %}
+        {{post.body_html | safe}}
+    {% else %}
+        {{post.body}}
+    {% endif %}
+</div>
+{% endblock %}

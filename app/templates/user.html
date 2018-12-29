@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Gitblog-{{user.username}}{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>{{user.username}}</h1>
+</div>
+<div class="profile">
+	<p>Name: {% if user.name %}{{user.name}}{% endif %}</p>
+	<p>Location: {% if user.location %}<a href="http://maps.goole.com/?q={{user.location}}">{{user.location}}{% endif %}</a></p>
+	<p>About me: {% if user.about_me %}{{user.about_me}}{% endif %}</p>
+	<p>Member since: {% if user.member_since %}{{user.member_since}}{% endif %}</p>
+	<p>Last seen: {% if user.last_seen %}{{user.last_seen}}{% endif %}</p>
+	{% if user == current_user %}
+	<p><a class="btn btn-default" href="{{url_for('main.edit_profile')}}">Edit Profile</a></p>
+	{% endif %}
+	{% if user != current_user %}
+		{% if not current_user.is_following(user) %}
+			<a href="{{url_for('main.follow', username=user.username)}}" class="btn btn-primary">Follow</a>
+		{% else %}
+			<a href="{{url_for('main.unfollow', username=user.username)}}" class="btn btn-default">Unfollow</a>
+		{% endif %}
+	{% endif %}
+	Followers: <span class="badge">{{user.followers.count()}}</span>
+	Following: <span class="badge">{{user.following.count()}}</span>
+	{% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+		| <span class="lable lable-default">Follows you</span>
+	{% endif %}
+</div>
+{% include "_posts.html" %}
+{% endblock %}
